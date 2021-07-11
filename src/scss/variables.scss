@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+$body-font-family: "Lato", sans-serif;
+$font-size-root: 16px;
+$input-font-size: 16px;
+
+// text variables
+$mt-primary-text: #3c3c3c;
+$mt-white-text: #ffffff;
+$mt-disabled-text: #aaaaaa;
+
+// accents / background-colors
+$mt-white: #ffffff;
+$mt-black: #000000;
+
+$mt-background: $mt-white;
+$mt-primary: #847979;
+$mt-secondary: #E8EBF7;
+$mt-accent: #F2D398;
+$mt-anchor: #4B1D3F;
+
+
+:export {
+    primaryText: $mt-primary-text;
+    whiteText: $mt-white-text;
+    disabledText: $mt-disabled-text;
+    
+    primary: $mt-primary;
+    secondary: $mt-secondary;
+    accent: $mt-accent;
+    anchor: $mt-anchor;
+
+    background: $mt-background;
+}
