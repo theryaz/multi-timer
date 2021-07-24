@@ -1,4 +1,4 @@
-# Virtual Shower
+# Multi Timer
 
 ## Project setup
 ```
