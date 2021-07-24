@@ -14,26 +14,14 @@ export default class TimerService{
 	async updateTimers(){
 		if(!this.rootTimersRef) await this.start();
 		const saveTimers = store.state.userState.rootTimers.map(t => t.serialize());
+		console.log("SaveTimers", saveTimers);
 		await this.rootTimersRef!.set(saveTimers);
 	}
 
 	private async rootTimersChanged(snapshot: firebase.database.DataSnapshot){
 		console.log("rootTimersChanged", JSON.stringify(snapshot.val(), null, 2));
-		const timers = snapshot.val() || TimerService.SampleTimers;
+		const timers = snapshot.val() || [];
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		store.commit('applyRootTimers', timers.map((t: any) => TimerModel.deserialize(t)));
 	}
-
-	static SampleTimers: TimerModel[] = [
-		new TimerModel("Kiev", [
-			{
-				started: new Date("2021-07-24T21:07:00.000Z"),
-			}
-		]),
-		new TimerModel("Slowcooker Running", [
-			{
-				started: new Date("2021-07-22T18:59:14.621Z"),
-			}
-		]).stop(),
-	]
 }

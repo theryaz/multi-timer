@@ -55,7 +55,13 @@ const userStore: Module<UserState, RootState> = {
 		},
 		deleteTimer(state, timer: TimerModel) {
 			const index = state.rootTimers.findIndex(t => t.uid === timer.uid);
-			state.rootTimers = state.rootTimers.splice(index, 1);
+			state.rootTimers.splice(index, 1);
+			timerService.updateTimers();
+		},
+		addTimer(state, timer: TimerModel | null = null) {
+			state.rootTimers.push(
+				timer !== null ? timer : new TimerModel(`Timer #${state.rootTimers.length+1}`),
+			);
 			timerService.updateTimers();
 		},
 	},
@@ -65,6 +71,9 @@ const userStore: Module<UserState, RootState> = {
 		},
 		deleteTimer(store, timer: TimerModel) {
 			store.commit('deleteTimer', timer);
+		},
+		addTimer(store, timer: TimerModel | null = null) {
+			store.commit('addTimer', timer);
 		},
 	}
 };

@@ -3,6 +3,6 @@ export function randomNumber(min: number, max: number): number{
 }
 export function randomString(length: number): string{
 	const chars = 'abcdefghijklmnpoqrstuvwxyzABCDEFGHIJKLMNPOQRSTUVWXYZ';
-	return new Array(length).map(() => chars.charAt(randomNumber(0, chars.length))).join('');
+	return new Array(length).fill(null).map(() => chars.charAt(randomNumber(0, chars.length))).join('');
 }
 

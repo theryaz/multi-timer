@@ -1,6 +1,18 @@
 <template>
   <v-container class="py-6">
-    <v-row>
+    <v-card
+      v-if="RootTimers.length === 0"
+      class="px-6 py-12 text-h6 text-center text--disabled"
+      outlined
+    >
+      <div class="mb-4">
+        <v-icon x-large>
+          mdi-timer-outline
+        </v-icon>
+      </div>
+      Tap the plus button to add your first timer!
+    </v-card>
+    <v-row v-else>
       <v-col
         v-for="(timer, index) of RootTimers" :key="index"
         cols="12" sm="4" md="3"
@@ -65,8 +77,8 @@ export default class Home extends Mixins(CurrentUserMixin) {
     return store.state.userState.rootTimers;
   }
 
-  async addTimer(): Promise<void>{
-    console.log("Add Timer");
+  async addTimer(timer: TimerModel | null = null): Promise<void>{
+    store.dispatch('addTimer', timer);
   }
 
   updateTimers(): void{
