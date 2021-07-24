@@ -14,9 +14,11 @@ export class TimerModel{
 
 	get state(): TimerState{
 		if(this.intervals.length === 0) return "stopped";
-		const lastInterval = this.intervals[this.intervals.length - 1];
-		if(lastInterval.stopped === undefined) return "running";
+		if(this.LastInterval.stopped === undefined) return "running";
 		return "paused";
+	}
+	get LastInterval(): TimerInterval{
+		return this.intervals[this.intervals.length - 1];
 	}
 
 	get IsRunning(): boolean{
@@ -45,8 +47,7 @@ export class TimerModel{
 	}
 	stop(): TimerModel{
 		if(!this.IsRunning) return this;
-		const lastInterval = this.intervals[this.intervals.length - 1];
-		lastInterval.stopped = new Date();
+		this.LastInterval.stopped = new Date();
 		return this;
 	}
 	reset(): TimerModel{

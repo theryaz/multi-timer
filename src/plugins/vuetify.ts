@@ -17,6 +17,9 @@ export default new Vuetify({
 				accent: palette.accent,
 				anchor: palette.anchor,
 
+				goGreen: palette.goGreen,
+				stopRed: palette.stopRed,
+
 				background: palette.background,
 
 				// suggested labels:

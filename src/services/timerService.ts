@@ -19,7 +19,11 @@ export default class TimerService{
 	}
 
 	static SampleTimers: TimerModel[] = [
-		new TimerModel("Starter Fed"),
+		new TimerModel("Kiev", [
+			{
+				started: new Date("2021-07-24T21:07:00.000Z"),
+			}
+		]),
 		new TimerModel("Slowcooker Running", [
 			{
 				started: new Date("2021-07-22T18:59:14.621Z"),

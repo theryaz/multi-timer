@@ -7,18 +7,18 @@
 			</div>
 		</v-card-text>
 		<v-card-actions class="d-flex">
-			<v-btn color="secondary" v-if="timer.IsRunning" class="flex-grow-1" elevation="0" @click="stop">
+			<v-btn color="accent" v-if="timer.IsRunning" class="flex-grow-1" elevation="0" @click="stop">
 				<v-icon>
 					mdi-pause
 				</v-icon>
 			</v-btn>
 			<template v-else>
-				<v-btn color="accent" class="flex-grow-1" elevation="0" @click="reset">
+				<v-btn outlined color="accent" class="flex-grow-1" elevation="0" @click="reset">
 					<v-icon>
 						mdi-refresh
 					</v-icon>
 				</v-btn>
-				<v-btn color="secondary" class="flex-grow-1" elevation="0" @click="start">
+				<v-btn color="accent" class="flex-grow-1" elevation="0" @click="start">
 					<v-icon>
 						mdi-play
 					</v-icon>

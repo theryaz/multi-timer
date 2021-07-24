@@ -12,11 +12,15 @@ $mt-disabled-text: #aaaaaa;
 $mt-white: #ffffff;
 $mt-black: #000000;
 
+$mt-go-green: #20993C;
+$mt-stop-red: #D12506;
+
 $mt-background: $mt-white;
 $mt-primary: #847979;
 $mt-secondary: #E8EBF7;
 $mt-accent: #F2D398;
 $mt-anchor: #4B1D3F;
+
 
 
 :export {
@@ -28,6 +32,9 @@ $mt-anchor: #4B1D3F;
     secondary: $mt-secondary;
     accent: $mt-accent;
     anchor: $mt-anchor;
+
+    goGreen: $mt-go-green;
+    stopRed: $mt-stop-red;
 
     background: $mt-background;
 }
