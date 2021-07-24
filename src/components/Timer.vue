@@ -31,6 +31,7 @@
 import { VuetifyMixin } from '@/mixins/VuetifyMixin';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import { TimerModel } from '@/models/TimerModel';
+import { timerService } from '@/services';
 
 @Component
 export default class Timer extends Mixins(VuetifyMixin) {
@@ -58,14 +59,17 @@ export default class Timer extends Mixins(VuetifyMixin) {
 	start(): void{
 		this.timer.start();
 		this.internalTick++;
+		this.$emit('start');
 	}
 	stop(): void{
 		this.timer.stop();
 		this.internalTick++;
+		this.$emit('stop');
 	}
 	reset(): void{
 		this.timer.reset();
 		this.internalTick++;
+		this.$emit('reset');
 	}
 
 }

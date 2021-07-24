@@ -8,14 +8,21 @@ export default class TimerService{
 		return `timers/root/${store.state.userState.user?.uid}`;
 	}
 	async start(){
-		console.log("Initializing TimerModel Service UserId: ", store.state.userState.user?.uid);
 		this.rootTimersRef = firebase.database().ref(this.UserRootTimers);
 		this.rootTimersRef.on('value', this.rootTimersChanged.bind(this));
 	}
+	async updateTimers(timers: TimerModel[]){
+		if(!this.rootTimersRef) await this.start();
+		const saveTimers = timers.map(t => t.serialize());
+		console.log("updateTimers", JSON.stringify(saveTimers, null, 2));
+		await this.rootTimersRef!.set(saveTimers);
+	}
 
 	private async rootTimersChanged(snapshot: firebase.database.DataSnapshot){
+		console.log("rootTimersChanged", JSON.stringify(snapshot.val(), null, 2));
 		const timers = snapshot.val() || TimerService.SampleTimers;
-		store.commit('applyRootTimers', timers);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		store.commit('applyRootTimers', timers.map((t: any) => TimerModel.deserialize(t)));
 	}
 
 	static SampleTimers: TimerModel[] = [

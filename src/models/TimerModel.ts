@@ -67,6 +67,35 @@ export class TimerModel{
 		return ~~(this.TimeMS/1000)
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	static deserialize(timer: Record<string,any>): TimerModel{
+		return new TimerModel(
+			(timer.label as string),
+			timer.intervals ? (timer.intervals as Record<string,string>[])
+				.map((i: Record<string,string>) => ({
+					started: new Date(i.started),
+					stopped: i.stopped ? new Date(i.stopped) : undefined,
+				})): undefined
+		);
+	}
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	serialize(): Record<string, any>{
+		return {
+			...this,
+			intervals: this.intervals.map(i => {
+				if(i.stopped === undefined){
+					return {
+						started: i.started.toISOString(),
+					}
+				}
+				return{
+					started: i.started.toISOString(),
+					stopped: i.stopped.toISOString(),
+				}
+			})
+		}
+	}
+
 	static getIntervalMs(interval: TimerInterval): number{
 		if(interval.stopped === undefined){
 			return Date.now() - +interval.started;

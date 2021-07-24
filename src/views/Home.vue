@@ -7,6 +7,9 @@
       >
         <Timer
           :timer="timer"
+          @start="updateTimers"
+          @stop="updateTimers"
+          @reset="updateTimers"
         />
       </v-col>
     </v-row>
@@ -22,6 +25,7 @@ import { CurrentUserMixin } from '@/mixins/CurrentUserMixin';
 import store from '@/store';
 import FabLauncher from '@/components/FabLauncher.vue';
 import { TimerModel } from '@/models/TimerModel';
+import { timerService } from '@/services';
 
 
 @Component({
@@ -37,6 +41,10 @@ export default class Home extends Mixins(CurrentUserMixin) {
 
   async addTimer(): Promise<void>{
     console.log("Add Timer");
+  }
+
+  updateTimers(): void{
+    timerService.updateTimers(this.RootTimers);
   }
 }
 </script>
