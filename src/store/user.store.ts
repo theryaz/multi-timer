@@ -3,12 +3,14 @@ import firebase from 'firebase';
 import { User } from '@/models/User';
 import { RootState } from './RootState';
 import router from '@/router';
+import { TimerModel } from '@/models/TimerModel';
 
 export interface UserState{
 	firebaseAuthInitialized: boolean;
 	isAuthenticated: boolean;
 	user: User | null;
 	firebaseUser: firebase.User | null;
+	rootTimers: TimerModel[];
 }
 
 const userStore: Module<UserState, RootState> = {
@@ -17,6 +19,7 @@ const userStore: Module<UserState, RootState> = {
 		isAuthenticated: false,
 		user: null,
 		firebaseUser: null,
+		rootTimers: [],
 	},
 	mutations:{
 		setFirebaseUser(state, user: firebase.User){
@@ -45,8 +48,16 @@ const userStore: Module<UserState, RootState> = {
 			state.user = null;
 			firebase.auth().signOut();
 			router.push('/login');
-		}
+		},
+		applyRootTimers(state, timers: TimerModel[]) {
+			state.rootTimers = timers.map(t => new TimerModel(t.label, t.intervals));
+		},
 	},
+	actions:{
+		applyRootTimers(store, timers: TimerModel[]) {
+			store.commit('applyRootTimers', timers);
+		},
+	}
 };
 
 export default userStore;

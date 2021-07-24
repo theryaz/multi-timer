@@ -15,6 +15,8 @@ import AppBar from  '@/components/nav/AppBar.vue';
 Vue.component('AppBar', AppBar);
 import UserMenu from  '@/components/UserMenu.vue';
 Vue.component('UserMenu', UserMenu);
+import Timer from  '@/components/Timer.vue';
+Vue.component('Timer', Timer);
 
 Vue.config.productionTip = false
 
