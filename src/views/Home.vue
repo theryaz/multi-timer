@@ -10,12 +10,38 @@
           @start="updateTimers"
           @stop="updateTimers"
           @reset="updateTimers"
+          @click:delete="confirmDeleteTimer(timer)"
         />
       </v-col>
     </v-row>
     <FabLauncher
       @click:timer="addTimer"
     />
+
+    <v-dialog v-model="showDelete">
+      <v-card class="px-4 py-6">
+        <v-card-title>
+          <v-btn fab elevation="0" color="primary" class="mr-4">
+            <v-icon size="28">
+              mdi-trash-can-outline
+            </v-icon>
+          </v-btn>
+          {{DeleteTimerTitle}}
+        </v-card-title>
+        <v-card-text>
+          This action can't be undone.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="ml-2" color="primary" large outlined @click="showDelete = false">
+            Cancel
+          </v-btn>
+          <v-btn class="ml-2 white--text" color="stopRed" large @click="deleteTimer">
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -44,7 +70,24 @@ export default class Home extends Mixins(CurrentUserMixin) {
   }
 
   updateTimers(): void{
-    timerService.updateTimers(this.RootTimers);
+    timerService.updateTimers();
+  }
+
+  showDelete: boolean = false;
+  timerToDelete: TimerModel | null = null;
+  confirmDeleteTimer(timer: TimerModel){
+    this.timerToDelete = timer;
+    this.showDelete = true;
+  }
+  deleteTimer(){
+    store.dispatch('deleteTimer', this.timerToDelete);
+    this.showDelete = false;
+  }
+  get DeleteTimerTitle(): string{
+    if(this.timerToDelete === null){
+      return "Delete timer?";
+    }
+    return `Delete "${this.timerToDelete.label}"?`;
   }
 }
 </script>

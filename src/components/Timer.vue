@@ -1,5 +1,17 @@
 <template>
-	<v-card class="py-3" flat outlined>
+	<v-card flat outlined>
+		<div class="text-right pt-2 pr-2">
+			<v-btn icon @click="edit">
+				<v-icon class="mx-1">
+					mdi-pencil
+				</v-icon>
+			</v-btn>
+			<v-btn icon @click="deleteTimer">
+				<v-icon class="mx-1">
+					mdi-trash-can-outline
+				</v-icon>
+			</v-btn>
+		</div>
 		<v-card-text class="text-center">
 			{{ timer.label }}
 			<div class="pa-1 time text-h4 text-center">
@@ -31,7 +43,6 @@
 import { VuetifyMixin } from '@/mixins/VuetifyMixin';
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import { TimerModel } from '@/models/TimerModel';
-import { timerService } from '@/services';
 
 @Component
 export default class Timer extends Mixins(VuetifyMixin) {
@@ -70,6 +81,13 @@ export default class Timer extends Mixins(VuetifyMixin) {
 		this.timer.reset();
 		this.internalTick++;
 		this.$emit('reset');
+	}
+
+	edit(): void{
+		this.$emit('click:edit');
+	}
+	deleteTimer(): void{
+		this.$emit('click:delete');
 	}
 
 }

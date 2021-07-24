@@ -11,10 +11,9 @@ export default class TimerService{
 		this.rootTimersRef = firebase.database().ref(this.UserRootTimers);
 		this.rootTimersRef.on('value', this.rootTimersChanged.bind(this));
 	}
-	async updateTimers(timers: TimerModel[]){
+	async updateTimers(){
 		if(!this.rootTimersRef) await this.start();
-		const saveTimers = timers.map(t => t.serialize());
-		console.log("updateTimers", JSON.stringify(saveTimers, null, 2));
+		const saveTimers = store.state.userState.rootTimers.map(t => t.serialize());
 		await this.rootTimersRef!.set(saveTimers);
 	}
 

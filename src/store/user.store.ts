@@ -4,6 +4,7 @@ import { User } from '@/models/User';
 import { RootState } from './RootState';
 import router from '@/router';
 import { TimerModel } from '@/models/TimerModel';
+import { timerService } from '@/services';
 
 export interface UserState{
 	firebaseAuthInitialized: boolean;
@@ -52,10 +53,18 @@ const userStore: Module<UserState, RootState> = {
 		applyRootTimers(state, timers: TimerModel[]) {
 			state.rootTimers = timers.map(t => new TimerModel(t.label, t.intervals));
 		},
+		deleteTimer(state, timer: TimerModel) {
+			const index = state.rootTimers.findIndex(t => t.uid === timer.uid);
+			state.rootTimers = state.rootTimers.splice(index, 1);
+			timerService.updateTimers();
+		},
 	},
 	actions:{
 		applyRootTimers(store, timers: TimerModel[]) {
 			store.commit('applyRootTimers', timers);
+		},
+		deleteTimer(store, timer: TimerModel) {
+			store.commit('deleteTimer', timer);
 		},
 	}
 };
