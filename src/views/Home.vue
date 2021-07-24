@@ -22,6 +22,7 @@
           @start="updateTimers"
           @stop="updateTimers"
           @reset="updateTimers"
+          @click:edit="confirmEditTimer(timer)"
           @click:delete="confirmDeleteTimer(timer)"
         />
       </v-col>
@@ -50,6 +51,34 @@
           </v-btn>
           <v-btn class="ml-2 white--text" color="stopRed" large @click="deleteTimer">
             Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog fullscreen v-model="showEdit">
+      <v-card class="px-4 py-6">
+        <v-card-title class="accent">
+          <v-btn fab elevation="0" color="primary" class="mr-4">
+            <v-icon size="28">
+              mdi-pencil
+            </v-icon>
+          </v-btn>
+          {{EditTimerTitle}}
+        </v-card-title>
+        <v-card-text class="pa-6" v-if="timerToEdit">
+          <v-form @submit.prevent="editTimer">
+            <v-text-field outlined label="Label" v-model="timerToEdit.label"/>
+            <button type="submit" />
+          </v-form>
+        </v-card-text>
+        <v-card-actions class="px-6">
+          <v-spacer />
+          <v-btn class="ml-2" color="primary" large outlined @click="showEdit = false">
+            Cancel
+          </v-btn>
+          <v-btn class="ml-2 white--text" color="stopRed" large @click="editTimer">
+            Save
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -100,6 +129,20 @@ export default class Home extends Mixins(CurrentUserMixin) {
       return "Delete timer?";
     }
     return `Delete "${this.timerToDelete.label}"?`;
+  }
+
+  showEdit: boolean = false;
+  timerToEdit: TimerModel | null = null;
+  confirmEditTimer(timer: TimerModel){
+    this.timerToEdit = timer;
+    this.showEdit = true;
+  }
+  editTimer(){
+    store.dispatch('editTimer', this.timerToEdit);
+    this.showEdit = false;
+  }
+  get EditTimerTitle(): string{
+    return "Editing timer";
   }
 }
 </script>
