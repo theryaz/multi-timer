@@ -20,7 +20,7 @@
 						<v-col offset="6" cols="6">
 							<v-switch
 								inset label="Protected"
-								v-model="formTimer.protected"
+								v-model="formTimer.isProtected"
 								color="primary"
 								persistent-hint
 								hint="Requires prompt to make changes"

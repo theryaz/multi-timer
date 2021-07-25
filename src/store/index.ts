@@ -13,7 +13,8 @@ const vuexLocal = new VuexPersistence<RootState>({
   reducer: (state) => {
     return {
       userState: {
-        rootTimers: state.userState.rootTimers
+        rootTimers: state.userState.rootTimers,
+        timers: state.userState.timers,
       }
     };
   }
