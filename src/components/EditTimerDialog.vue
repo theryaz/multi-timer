@@ -21,7 +21,7 @@
 							<v-switch
 								inset label="Protected"
 								v-model="formTimer.protected"
-								color="secondary"
+								color="primary"
 								persistent-hint
 								hint="Requires prompt to make changes"
 							/>
@@ -34,28 +34,63 @@
 							dense
 						>
 							<template v-for="(interval, index) of formTimer.intervals">
-								<v-timeline-item
-									:key="index"
+								<v-timeline-item dark
+									:key="`${index}_started`"
 									color="primary"
 									small dense
 									icon="mdi-play"
-									icon-color="black"
 								>
 									<span>{{ formatTime(interval.started) }}</span>
 									<span class="ml-4 text--secondary">
 										Started
 									</span>
-									<div class="text-caption text--disabled">
+									<v-dialog v-if="index === 0" v-model="showTimePicker">
+										<v-card class="pa-6">
+											<v-datetime-picker
+												label="Modify Start Time"
+												v-model="datetime"
+												@input="onDateChange"
+												:datePickerProps="{
+													allowedDates: allowedDates
+												}"
+											>
+												<template slot="dateIcon">
+													<v-icon>mdi-calendar</v-icon>
+												</template>
+												<template slot="timeIcon">
+													<v-icon>mdi-clock</v-icon>
+												</template>
+											</v-datetime-picker>
+											<v-card-actions>
+												<v-spacer />
+												<v-btn icon color="stopRed" @click="showTimePicker = false">
+													<v-icon>
+														mdi-close
+													</v-icon>
+												</v-btn>
+												<v-btn icon color="accent" @click="acceptTime">
+													<v-icon>
+														mdi-check
+													</v-icon>
+												</v-btn>
+											</v-card-actions>
+										</v-card>
+										<template v-slot:activator="{ on }">
+											<v-btn v-on="on" elevation="0" x-small class="ml-4">
+												Edit
+											</v-btn>
+										</template>
+									</v-dialog>
+									<div v-if="!isToday(interval.started)" class="text-caption text--disabled">
 										{{ formatDate(interval.started) }}
 									</div>
 								</v-timeline-item>
-								<v-timeline-item
+								<v-timeline-item dark
 									v-if="interval.stopped"
-									:key="index"
+									:key="`${index}_stopped`"
 									color="accent"
 									small dense
 									icon="mdi-stop"
-									icon-color="black"
 								>
 									<span>
 										{{ formatTime(interval.stopped) }}
@@ -63,8 +98,8 @@
 									<span class="ml-4 text--secondary">
 										Stopped
 									</span>
-									<div class="text-caption text--disabled">
-										{{ formatDate(interval.started) }}
+									<div v-if="!isToday(interval.stopped)" class="text-caption text--disabled">
+										{{ formatDate(interval.stopped) }}
 									</div>
 								</v-timeline-item>
 							</template>
@@ -97,13 +132,27 @@ export default class EditTimerDialog extends Mixins(VuetifyMixin) {
 	@Prop({ default: false }) value!: boolean;
 	@Prop({ default: null }) timer!: TimerModel | null;
 
+	datetime: Date | null = null;
+	showTimePicker: boolean = false;
+
+	acceptTime(): void{
+		if(this.datetime === null) return;
+		this.formTimer.FirstInterval.started = this.datetime;
+		this.showTimePicker = false;
+	}
+
 	formTimer: TimerModel = this.Timer;
 	@Watch('timer')
 	initFormTimer(){
 		this.formTimer = new TimerModel(this.Timer.label, this.Timer.intervals);
+		this.datetime = this.formTimer.FirstInterval ? this.formTimer.FirstInterval.started : null;
 	}
 	mounted(){
 		this.initFormTimer();
+	}
+	onDateChange(newDate: Date): void{
+		console.log("newDate", newDate);
+
 	}
 
 	get Timer(): TimerModel{
@@ -122,6 +171,22 @@ export default class EditTimerDialog extends Mixins(VuetifyMixin) {
 	}
 	formatDate(date: Date): string{
 		return DateTime.fromJSDate(date).toFormat('MMMM dd, yyyy');
+	}
+	isToday(date: Date): string{
+		return DateTime.fromJSDate(date).hasSame(DateTime.local(),"day");
+	}
+	allowedDates(date: string): boolean{
+		const [YY,MM,DD] = date.split('-');
+		const now = new Date();
+		return new Date(+YY,+MM-1,+DD,now.getHours(), now.getMinutes(), now.getSeconds()).getDate() <= now.getDate();
+	}
+	allowedHours(v: string): boolean{
+		console.log("allowedHours", v);
+		return true;
+	}
+	allowedMinutes(v: string): boolean{
+		console.log("allowedMinutes", v);
+		return true;
 	}
 
 	submit(): void{

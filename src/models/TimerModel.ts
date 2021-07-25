@@ -19,8 +19,19 @@ export class TimerModel{
 		if(this.LastInterval.stopped === undefined) return "running";
 		return "paused";
 	}
+	get FirstInterval(): TimerInterval{
+		return this.intervals[0];
+	}
 	get LastInterval(): TimerInterval{
 		return this.intervals[this.intervals.length - 1];
+	}
+
+	setStart(date: Date): this{
+		if(this.FirstInterval.started < date){
+			return this;
+		}
+		this.FirstInterval.started = date;
+		return this;
 	}
 
 	get IsRunning(): boolean{

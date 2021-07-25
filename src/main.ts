@@ -9,8 +9,9 @@ import { timerService } from '@/services'
 
 import vuetify from './plugins/vuetify';
 
-import { VNumber } from "@maxflex/v-number";
-Vue.component('v-number', VNumber);
+import DatetimePicker from 'vuetify-datetime-picker'
+Vue.use(DatetimePicker);
+
 import AppBar from  '@/components/nav/AppBar.vue';
 Vue.component('AppBar', AppBar);
 import UserMenu from  '@/components/UserMenu.vue';
