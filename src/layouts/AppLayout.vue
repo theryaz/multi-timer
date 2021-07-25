@@ -35,7 +35,7 @@ export default Vue.extend({
 			return store.state.userState.user;
 		},
 		useNavbar(): boolean{
-			return false;
+			return true;
 		},
 		IsHome(): boolean{
 			return this.$route.path === '/';
