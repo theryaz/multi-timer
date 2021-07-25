@@ -2,7 +2,7 @@
 	<v-navigation-drawer
 		width="180"
 		app fixed disable-resize-watcher
-		:mini-variant.sync="mini"
+		:mini-variant="mini"
 		:permanent="mini"
 		:value="showSideNav"
 		@input="updateShowSideNav"
@@ -21,7 +21,7 @@
 			</v-btn>
 		</v-list-item>
 
-		<v-list-item @click.stop="tag('home')">
+		<v-list-item exact :to="tag()">
 			<v-list-item-icon>
 				<v-icon>
 					mdi-home-outline
@@ -32,12 +32,15 @@
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item>
+		<v-list-item exact :to="tag('ryan')">
 			<v-list-item-icon>
-				<v-icon @click.stop="tag('home')">
-					mdi-home-outline
+				<v-icon>
+					mdi-label-outline
 				</v-icon>
 			</v-list-item-icon>
+			<v-list-item-content>
+				Ryan
+			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item>
@@ -46,6 +49,8 @@
 					mdi-plus
 				</v-icon>
 			</v-list-item-icon>
+			<v-list-item-content>
+			</v-list-item-content>
 		</v-list-item>
 
 	</v-navigation-drawer>
@@ -54,6 +59,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator';
 import { VuetifyMixin } from '@/mixins/VuetifyMixin';
+import { Route } from 'vue-router';
 @Component
 export default class NavigationDrawer extends Mixins(VuetifyMixin){
 	mini: boolean = true;
@@ -64,8 +70,12 @@ export default class NavigationDrawer extends Mixins(VuetifyMixin){
 		this.mini = true;
 	}
 
-	tag(): void{
-		console.log("Home");
+	tag(tag?: string): Partial<Route>{
+		if(tag === undefined){
+			return { name: 'Home' };
+		}
+		return {name: 'Home',params:{tag}};
 	}
+
 }
 </script>

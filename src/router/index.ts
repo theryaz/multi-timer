@@ -26,7 +26,7 @@ const routes: Array<RouteConfig> = [
     component: AppLayout,
     children:[
       {
-        path: '',
+        path: ':tag?',
         name: 'Home',
         component: Home,
       }
