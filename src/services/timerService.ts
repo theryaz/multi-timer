@@ -2,9 +2,17 @@ import firebase from 'firebase';
 import store from '@/store';
 import { TimerModel } from '@/models/TimerModel';
 
+const knrShare = [
+	"sfLXY2hzE0VhaUksmoIXbTHWLc33",
+	"Q7pYoMEponQlqGBZZqwkqw0J0U02",
+];
 export default class TimerService{
 	private rootTimersRef: firebase.database.Reference | null = null;
 	get UserRootTimers(): string{
+		// Lazy way to share timers
+		if(knrShare.includes(store.state.userState.firebaseUser?.uid!)){
+			return `timers/knrShare`;
+		}
 		return `timers/root/${store.state.userState.user?.uid}`;
 	}
 	async start(){

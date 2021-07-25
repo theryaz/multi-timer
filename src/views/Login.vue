@@ -30,7 +30,7 @@
 			<v-col cols="12" offset="0" md="6" offset-md="3">
 				<v-card class="pa-12">
 					<v-btn @click="loginWithGoogle" color="primary" large block>
-						Signin with Google
+						Sign in with Google
 					</v-btn>
 				</v-card>
 			</v-col>
