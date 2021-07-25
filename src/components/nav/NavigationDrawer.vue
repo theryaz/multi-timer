@@ -3,10 +3,10 @@
 		width="180"
 		app fixed
 		:mini-variant.sync="mini"
-		permanent
-		v-model="showSideNav"
+		:permanent="mini"
+		:value="!mini"
+		hide-overlay
 	>
-
 		<v-list-item>
 			<v-list-item-icon>
 				<v-fade-transition v-if="mini">
@@ -34,7 +34,6 @@ import { Component, Mixins } from 'vue-property-decorator';
 import { VuetifyMixin } from '@/mixins/VuetifyMixin';
 @Component
 export default class NavigationDrawer extends Mixins(VuetifyMixin){
-	showSideNav: boolean = false;
 	mini: boolean = true;
 }
 </script>
