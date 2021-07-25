@@ -11,11 +11,6 @@
 				</v-app-bar-nav-icon>
 			</div>
 		</v-expand-x-transition>
-		<div class="text-center title">
-			<template v-if="PageTitle">
-				{{ PageTitle }}
-			</template>
-		</div>
 		<UserMenu class="nav-edge" />
 	</v-app-bar>
 </template>
@@ -38,10 +33,6 @@ export default class AppBar extends Vue{
 	}
 	get IsHome(): boolean{
 		return this.$route.path === '/';
-	}
-	get PageTitle(): string | null{
-		if(!this.$route.meta['pageTitle']) return null;
-		return this.$route.meta['pageTitle'];
 	}
 }
 </script>
