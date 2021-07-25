@@ -12,7 +12,6 @@
     "@maxflex/v-number": "^1.0.9",
     "core-js": "^3.6.5",
     "firebase": "^8.2.3",
-    "js-event-bus": "git+https://github.com/theryaz/js-event-bus.git#typings",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
