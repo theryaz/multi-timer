@@ -3,7 +3,7 @@
 		class="app-bar flex-grow-0 transparent border-bottom"
 		:class="{ 'dark': IsDark }"
 		elevation="0"
-		height="56"
+		height="57"
 	>
 		<v-sheet outlined class="rounded-lg pa-2 px-3">
 			<v-icon>
