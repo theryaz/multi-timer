@@ -17,6 +17,8 @@ import UserMenu from  '@/components/UserMenu.vue';
 Vue.component('UserMenu', UserMenu);
 import Timer from  '@/components/Timer.vue';
 Vue.component('Timer', Timer);
+import EditTimerDialog from  '@/components/EditTimerDialog.vue';
+Vue.component('EditTimerDialog', EditTimerDialog);
 
 Vue.config.productionTip = false
 

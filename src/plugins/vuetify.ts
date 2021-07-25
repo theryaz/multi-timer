@@ -4,28 +4,31 @@ import palette from "@/scss/variables.scss";
 
 Vue.use(Vuetify);
 
+const THEME = {
+	primaryText: palette.primaryText,
+	whiteText: palette.whiteText,
+
+	primary: palette.primary,
+	secondary: palette.secondary,
+	accent: palette.accent,
+	anchor: palette.anchor,
+
+	goGreen: palette.goGreen,
+	stopRed: palette.stopRed,
+
+	background: palette.background,
+
+	// suggested labels:
+	// secondary, accent, anchor
+	// error, info, success, warning
+};
 
 export default new Vuetify({
 	theme:{
+		dark: true,
 		themes:{
-			light:{
-				primaryText: palette.primaryText,
-				whiteText: palette.whiteText,
-				
-				primary: palette.primary,
-				secondary: palette.secondary,
-				accent: palette.accent,
-				anchor: palette.anchor,
-
-				goGreen: palette.goGreen,
-				stopRed: palette.stopRed,
-
-				background: palette.background,
-
-				// suggested labels:
-				// secondary, accent, anchor
-				// error, info, success, warning
-			}
+			light:THEME,
+			dark:THEME,
 		}
 	}
 });

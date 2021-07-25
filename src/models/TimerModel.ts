@@ -11,6 +11,8 @@ export class TimerModel{
 	public uid: string;
 	public label: string;
 	public intervals: TimerInterval[] = [];
+	/** Timer requires prompt to be modified */
+	public protected: boolean = false;
 
 	get state(): TimerState{
 		if(this.intervals.length === 0) return "stopped";

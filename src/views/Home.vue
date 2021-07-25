@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-6">
+  <v-container fluid class="py-6">
     <v-card
       v-if="RootTimers.length === 0"
       class="px-6 py-12 text-h6 text-center text--disabled"
@@ -15,7 +15,7 @@
     <v-row v-else>
       <v-col
         v-for="(timer, index) of RootTimers" :key="index"
-        cols="12" sm="4" md="3"
+        cols="12" sm="6" md="4" lg="3"
       >
         <Timer
           :timer="timer"
@@ -56,33 +56,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog fullscreen v-model="showEdit">
-      <v-card class="px-4 py-6">
-        <v-card-title class="accent">
-          <v-btn fab elevation="0" color="primary" class="mr-4">
-            <v-icon size="28">
-              mdi-pencil
-            </v-icon>
-          </v-btn>
-          {{EditTimerTitle}}
-        </v-card-title>
-        <v-card-text class="pa-6" v-if="timerToEdit">
-          <v-form @submit.prevent="editTimer">
-            <v-text-field outlined label="Label" v-model="timerToEdit.label"/>
-            <button type="submit" />
-          </v-form>
-        </v-card-text>
-        <v-card-actions class="px-6">
-          <v-spacer />
-          <v-btn class="ml-2" color="primary" large outlined @click="showEdit = false">
-            Cancel
-          </v-btn>
-          <v-btn class="ml-2 white--text" color="stopRed" large @click="editTimer">
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <EditTimerDialog v-model="showEdit" :timer="timerToEdit" @submit="editTimer"/>
   </v-container>
 </template>
 
@@ -137,12 +111,10 @@ export default class Home extends Mixins(CurrentUserMixin) {
     this.timerToEdit = timer;
     this.showEdit = true;
   }
-  editTimer(){
-    store.dispatch('editTimer', this.timerToEdit);
+  editTimer(timer: TimerModel){
+    store.dispatch('editTimer', timer);
     this.showEdit = false;
-  }
-  get EditTimerTitle(): string{
-    return "Editing timer";
+    this.timerToEdit = null;
   }
 }
 </script>
