@@ -7,6 +7,16 @@
 				</div>
 			</template>
 			<v-list>
+				<v-list-item @click="toggleDarkMode">
+					<v-list-item-content>
+						Dark Mode
+					</v-list-item-content>
+					<v-list-item-icon>
+						<v-icon>
+							mdi-theme-light-dark
+						</v-icon>
+					</v-list-item-icon>
+				</v-list-item>
 				<v-list-item @click="logout">
 					<v-list-item-content>
 						Logout
@@ -34,6 +44,22 @@ import UserInfo from '@/components/UserInfo.vue';
 	}
 })
 export default class UserMenu extends Mixins(FirebaseAuthMixin){
+
+	created(): void{
+		this.initTheme();
+	}
+	initTheme(): void{
+		const darkMode = window.localStorage.getItem('darkMode');
+		if(darkMode === 'true'){
+			this.$vuetify.theme.dark = true;
+		}else if(darkMode === 'false'){
+			this.$vuetify.theme.dark = false;
+		}
+	}
+	toggleDarkMode(): void{
+		this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+		window.localStorage.setItem('darkMode', this.$vuetify.theme.dark === true ? 'true' : 'false');
+	}
 
 	get AuthInitialized(): boolean{
 		return store.state.userState.firebaseAuthInitialized;

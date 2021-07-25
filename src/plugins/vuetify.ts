@@ -25,7 +25,7 @@ const THEME = {
 
 export default new Vuetify({
 	theme:{
-		dark: true,
+		dark: false,
 		themes:{
 			light:THEME,
 			dark:THEME,
