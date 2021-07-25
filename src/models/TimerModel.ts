@@ -82,7 +82,7 @@ export class TimerModel{
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static deserialize(timer: Record<string,any>): TimerModel{
-		return new TimerModel(
+		const t = new TimerModel(
 			(timer.label as string),
 			timer.intervals ? (timer.intervals as Record<string,string>[])
 				.map((i: Record<string,string>) => ({
@@ -90,6 +90,9 @@ export class TimerModel{
 					stopped: i.stopped ? new Date(i.stopped) : undefined,
 				})): undefined
 		);
+		t.uid = timer.uid;
+		t.protected = timer.protected;
+		return t;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	serialize(): Record<string, any>{

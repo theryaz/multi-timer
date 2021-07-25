@@ -51,7 +51,7 @@ const userStore: Module<UserState, RootState> = {
 			router.push('/login');
 		},
 		applyRootTimers(state, timers: TimerModel[]) {
-			state.rootTimers = timers.map(t => new TimerModel(t.label, t.intervals));
+			state.rootTimers = timers.map(t => TimerModel.deserialize(t));
 		},
 		deleteTimer(state, timer: TimerModel) {
 			const index = state.rootTimers.findIndex(t => t.uid === timer.uid);

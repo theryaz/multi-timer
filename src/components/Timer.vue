@@ -12,6 +12,13 @@
 				</v-icon>
 			</v-btn>
 		</div>
+		<div v-if="TimerProtected" class="position-relative">
+			<div class="protected-icon-position text-center">
+				<v-icon size="24" class="protected-icon ml-n3 text--disabled">
+					mdi-lock
+				</v-icon>
+			</div>
+		</div>
 		<v-card-text class="text-center">
 			{{ timer.label }}
 			<div class="pa-1 time text-h4 text-center">
@@ -36,6 +43,28 @@
 					</v-icon>
 				</v-btn>
 			</template>
+			<v-dialog v-model="showConfirm">
+				<v-card class="py-6 px-4s">
+					<v-card-text>
+						{{ confirmText }}
+					</v-card-text>
+					<v-card-actions>
+						<v-spacer />
+						<v-btn color="accent" large outlined @click="cancelConfirm">
+							Cancel
+						</v-btn>
+						<v-btn color="accent" class="black--text" large v-if="confirmAction === 'start'" @click="start(true)">
+							Start
+						</v-btn>
+						<v-btn color="accent" class="black--text" large v-else-if="confirmAction === 'stop'" @click="stop(true)">
+							Stop
+						</v-btn>
+						<v-btn color="accent" class="black--text" large v-if="confirmAction === 'reset'" @click="reset(true)">
+							Reset
+						</v-btn>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 		</v-card-actions>
 	</v-card>
 </template>
@@ -48,8 +77,11 @@ import { TimerModel } from '@/models/TimerModel';
 export default class Timer extends Mixins(VuetifyMixin) {
 	@Prop({ required: true }) timer!: TimerModel;
 
+	get TimerProtected(): boolean{
+		return this.Timer.protected;
+	}
 	get Timer(): TimerModel{
-		return new TimerModel(this.timer.label, this.timer.intervals);
+		return this.timer;
 	}
 	get TimeMS(): number{
 		this.tick; this.internalTick;
@@ -67,20 +99,49 @@ export default class Timer extends Mixins(VuetifyMixin) {
 		}
 	}
 
-	start(): void{
+	cancelConfirm(): void{
+		this.showConfirm = false;
+		this.confirmText = "";
+		this.confirmAction = null;
+	}
+	showConfirm: boolean = false;
+	confirmText: string = "";
+	confirmAction: string | null = null;
+	start(confirmed?: boolean): void{
+		if(this.timer.protected && confirmed !== true){
+			this.showConfirm = true;
+			this.confirmText = `Start ${this.timer.label}?`;
+			this.confirmAction = "start";
+			return;
+		}
 		this.timer.start();
 		this.internalTick++;
 		this.$emit('start');
+		this.cancelConfirm();
 	}
-	stop(): void{
+	stop(confirmed?: boolean): void{
+		if(this.timer.protected && confirmed !== true){
+			this.showConfirm = true;
+			this.confirmText = `Stop ${this.timer.label}?`;
+			this.confirmAction = "stop";
+			return;
+		}
 		this.timer.stop();
 		this.internalTick++;
 		this.$emit('stop');
+		this.cancelConfirm();
 	}
-	reset(): void{
+	reset(confirmed?: boolean): void{
+		if(this.timer.protected && confirmed !== true){
+			this.showConfirm = true;
+			this.confirmText = `Reset ${this.timer.label}?`;
+			this.confirmAction = "reset";
+			return;
+		}
 		this.timer.reset();
 		this.internalTick++;
 		this.$emit('reset');
+		this.cancelConfirm();
 	}
 
 	edit(): void{
@@ -95,5 +156,11 @@ export default class Timer extends Mixins(VuetifyMixin) {
 <style lang="scss" scoped>
 .time{
 	letter-spacing: 1px;
+}
+.protected-icon-position{
+	position: absolute;
+	top: 16px;
+	left: 50%;
+	width: 0;
 }
 </style>

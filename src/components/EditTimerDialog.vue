@@ -1,6 +1,6 @@
 <template>
 	<v-dialog fullscreen :value="value" @input="(val) => $emit('input', val)">
-		<v-card class="px-4 py-6">
+		<v-card class="px-4 py-6" v-if="timer">
 			<v-card-title class="primary">
 				<v-btn fab elevation="0" color="accent" class="mr-4">
 					<v-icon size="28">
@@ -27,84 +27,96 @@
 							/>
 						</v-col>
 					</v-row>
-					<v-divider class="my-6" />
-					<v-sheet height="200" class="timeline-scroll-wrapper">
-						<v-timeline
-							align-top
-							dense
-						>
-							<template v-for="(interval, index) of formTimer.intervals">
+					<template v-if="formTimer.intervals.length > 0">
+						<v-divider class="my-6" />
+						<v-sheet height="200" class="timeline-scroll-wrapper">
+							<v-timeline
+								align-top
+								dense
+							>
+								<template v-for="(interval, index) of formTimer.intervals">
+									<v-timeline-item dark
+										:key="`${index}_started`"
+										color="primary"
+										small dense
+										icon="mdi-play"
+									>
+										<span>{{ formatTime(interval.started) }}</span>
+										<span class="ml-4 text--secondary">
+											Started
+										</span>
+										<v-dialog v-if="index === 0" v-model="showTimePicker">
+											<v-card class="pa-6">
+												<v-datetime-picker
+													label="Modify Start Time"
+													v-model="datetime"
+													@input="onDateChange"
+													:datePickerProps="{
+														allowedDates: allowedDates
+													}"
+												>
+													<template slot="dateIcon">
+														<v-icon>mdi-calendar</v-icon>
+													</template>
+													<template slot="timeIcon">
+														<v-icon>mdi-clock</v-icon>
+													</template>
+												</v-datetime-picker>
+												<v-card-actions>
+													<v-spacer />
+													<v-btn icon color="stopRed" @click="showTimePicker = false">
+														<v-icon>
+															mdi-close
+														</v-icon>
+													</v-btn>
+													<v-btn icon color="accent" @click="acceptTime">
+														<v-icon>
+															mdi-check
+														</v-icon>
+													</v-btn>
+												</v-card-actions>
+											</v-card>
+											<template v-slot:activator="{ on }">
+												<v-btn v-on="on" elevation="0" x-small class="ml-4">
+													Edit
+												</v-btn>
+											</template>
+										</v-dialog>
+										<div v-if="!isToday(interval.started)" class="text-caption text--disabled">
+											{{ formatDate(interval.started) }}
+										</div>
+									</v-timeline-item>
+									<v-timeline-item dark
+										v-if="interval.stopped"
+										:key="`${index}_stopped`"
+										color="accent"
+										small dense
+										icon="mdi-stop"
+									>
+										<span>
+											{{ formatTime(interval.stopped) }}
+										</span>
+										<span class="ml-4 text--secondary">
+											Stopped
+										</span>
+										<div v-if="!isToday(interval.stopped)" class="text-caption text--disabled">
+											{{ formatDate(interval.stopped) }}
+										</div>
+									</v-timeline-item>
+								</template>
 								<v-timeline-item dark
-									:key="`${index}_started`"
+									v-if="timer.IsRunning"
 									color="primary"
 									small dense
-									icon="mdi-play"
+									icon="mdi-timer-outline"
 								>
-									<span>{{ formatTime(interval.started) }}</span>
-									<span class="ml-4 text--secondary">
-										Started
+									<span class="text--secondary">
+										Running
 									</span>
-									<v-dialog v-if="index === 0" v-model="showTimePicker">
-										<v-card class="pa-6">
-											<v-datetime-picker
-												label="Modify Start Time"
-												v-model="datetime"
-												@input="onDateChange"
-												:datePickerProps="{
-													allowedDates: allowedDates
-												}"
-											>
-												<template slot="dateIcon">
-													<v-icon>mdi-calendar</v-icon>
-												</template>
-												<template slot="timeIcon">
-													<v-icon>mdi-clock</v-icon>
-												</template>
-											</v-datetime-picker>
-											<v-card-actions>
-												<v-spacer />
-												<v-btn icon color="stopRed" @click="showTimePicker = false">
-													<v-icon>
-														mdi-close
-													</v-icon>
-												</v-btn>
-												<v-btn icon color="accent" @click="acceptTime">
-													<v-icon>
-														mdi-check
-													</v-icon>
-												</v-btn>
-											</v-card-actions>
-										</v-card>
-										<template v-slot:activator="{ on }">
-											<v-btn v-on="on" elevation="0" x-small class="ml-4">
-												Edit
-											</v-btn>
-										</template>
-									</v-dialog>
-									<div v-if="!isToday(interval.started)" class="text-caption text--disabled">
-										{{ formatDate(interval.started) }}
-									</div>
 								</v-timeline-item>
-								<v-timeline-item dark
-									v-if="interval.stopped"
-									:key="`${index}_stopped`"
-									color="accent"
-									small dense
-									icon="mdi-stop"
-								>
-									<span>
-										{{ formatTime(interval.stopped) }}
-									</span>
-									<span class="ml-4 text--secondary">
-										Stopped
-									</span>
-									<div v-if="!isToday(interval.stopped)" class="text-caption text--disabled">
-										{{ formatDate(interval.stopped) }}
-									</div>
-								</v-timeline-item>
-							</template>
-						</v-timeline>
-					</v-sheet>
+							</v-timeline>
+						</v-sheet>
+					</template>
 					<button type="submit" />
 				</v-form>
 			</v-card-text>
@@ -144,8 +156,10 @@ export default class EditTimerDialog extends Mixins(VuetifyMixin) {
 	formTimer: TimerModel = this.Timer;
 	@Watch('timer')
 	initFormTimer(){
-		this.formTimer = new TimerModel(this.Timer.label, this.Timer.intervals);
-		this.datetime = this.formTimer.FirstInterval ? this.formTimer.FirstInterval.started : null;
+		if(this.Timer !== null){
+			this.formTimer = TimerModel.deserialize(this.Timer);
+			this.datetime = this.formTimer.FirstInterval ? this.formTimer.FirstInterval.started : null;
+		}
 	}
 	mounted(){
 		this.initFormTimer();
@@ -172,7 +186,7 @@ export default class EditTimerDialog extends Mixins(VuetifyMixin) {
 	formatDate(date: Date): string{
 		return DateTime.fromJSDate(date).toFormat('MMMM dd, yyyy');
 	}
-	isToday(date: Date): string{
+	isToday(date: Date): boolean{
 		return DateTime.fromJSDate(date).hasSame(DateTime.local(),"day");
 	}
 	allowedDates(date: string): boolean{
