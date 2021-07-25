@@ -10,14 +10,6 @@ import userStore from './user.store';
 const vuexLocal = new VuexPersistence<RootState>({
   storage: window.localStorage,
   // Persist only timer states  in local storage
-  filter: (mutation): boolean => {
-    return [
-      'applyRootTimers',
-      'deleteTimer',
-      'editTimer',
-      'addTimer',
-    ].includes(mutation.type);
-  },
   reducer: (state) => {
     return {
       userState: {

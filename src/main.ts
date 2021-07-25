@@ -14,8 +14,12 @@ Vue.use(DatetimePicker);
 
 import AppBar from  '@/components/nav/AppBar.vue';
 Vue.component('AppBar', AppBar);
+import NavigationDrawer from  '@/components/nav/NavigationDrawer.vue';
+Vue.component('NavigationDrawer', NavigationDrawer);
 import UserMenu from  '@/components/UserMenu.vue';
 Vue.component('UserMenu', UserMenu);
+import SettingsMenu from  '@/components/SettingsMenu.vue';
+Vue.component('SettingsMenu', SettingsMenu);
 import Timer from  '@/components/Timer.vue';
 Vue.component('Timer', Timer);
 import EditTimerDialog from  '@/components/EditTimerDialog.vue';

@@ -12,7 +12,7 @@
 					</v-icon>
 				</v-avatar>
 			</div>
-			<div class="my-auto mx-2 display-name">
+			<div v-if="!hideName" class="my-auto mx-2 display-name">
 				{{ DisplayName }}
 			</div>
 		</div>
@@ -24,6 +24,7 @@ import { VuetifyMixin } from '@/mixins/VuetifyMixin';
 import { User } from '@/models/User';
 @Component
 export default class UserInfo extends Mixins(VuetifyMixin){
+	@Prop({ default: true, type: Boolean }) hideName!: boolean;
 	@Prop({ default: false, type: Boolean }) showAvatar!: boolean;
 	@Prop({ default: 36 }) size!: number;
 	@Prop({ default: null }) user!: User | null;
