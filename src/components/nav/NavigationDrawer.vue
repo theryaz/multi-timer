@@ -149,7 +149,6 @@ export default class NavigationDrawer extends Mixins(VuetifyMixin){
 		store.dispatch('addTag', { tag });
 	}
 	removeTag(id: string): void{
-		console.log("Remove Tag", { id })
 		store.dispatch('removeTag', { id });
 	}
 

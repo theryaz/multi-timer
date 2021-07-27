@@ -19,7 +19,6 @@ export default class UserService{
 
 	async userPrefsChanged(snapshot: firebase.database.DataSnapshot): Promise<void>{
 		const prefs = snapshot.val();
-		console.log("UserPrefsChanged", prefs);
 		store.commit('applyUserPrefs', prefs);
 	}
 
