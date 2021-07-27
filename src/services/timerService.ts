@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import store from '@/store';
+import { UserPrefs } from '@/store/user.store';
 import { TimerModel } from '@/models/TimerModel';
 
 const knrShare = [
@@ -9,6 +10,9 @@ const knrShare = [
 export default class TimerService{
 	private rootTimersRef: firebase.database.Reference | null = null;
 	private timerTagRefs: Record<string, firebase.database.Reference> = {};
+	get UserPrefs(): UserPrefs{
+		return store.state.userState.userPrefs;
+	}
 	get UserRootTimers(): string{
 		// Lazy way to share timers
 		if(knrShare.includes(store.state.userState.firebaseUser?.uid!)){
@@ -25,7 +29,6 @@ export default class TimerService{
 	}
 	async startTagRef(tag: string){
 		if (this.timerTagRefs[tag] !== undefined) return;
-		console.log("startTagRef...", tag);
 		this.timerTagRefs[tag] = firebase.database().ref(this.getTagRef(tag));
 		this.timerTagRefs[tag].on('value', (snapshot) => this.tagTimersChanged(tag, snapshot));
 	}

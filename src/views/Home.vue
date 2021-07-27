@@ -32,7 +32,7 @@
       @click:timer="addTimer"
     />
 
-    <v-dialog v-model="showDelete">
+    <v-dialog max-width="600" v-model="showDelete">
       <v-card class="px-4 py-6">
         <v-card-title>
           <v-btn fab elevation="0" color="primary" class="mr-4">
@@ -67,7 +67,7 @@ import { CurrentUserMixin } from '@/mixins/CurrentUserMixin';
 import store from '@/store';
 import FabLauncher from '@/components/FabLauncher.vue';
 import { TimerModel } from '@/models/TimerModel';
-import { timerService } from '@/services';
+import { timerService, userService } from '@/services';
 
 
 @Component({
@@ -78,7 +78,9 @@ import { timerService } from '@/services';
 export default class Home extends Mixins(CurrentUserMixin) {
 
   get Tag(): string | undefined{
-    return this.$route.params.tag;
+    const tag = userService.findTagById(this.$route.params.tagId);
+    if(tag === undefined) return undefined;
+    return tag.tag;
   }
   @Watch('Tag', { immediate: true }) updateTagRef(tag?: string): void{
     if(tag !== undefined){

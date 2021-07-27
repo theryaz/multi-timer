@@ -11,7 +11,7 @@
 			</v-icon>
 		</v-sheet>
 		<div class="ml-2 text-h6">
-			Multi Timer
+			{{ Title }}
 		</div>
 		<v-spacer />
 		<SettingsMenu class="mx-2" />
@@ -23,6 +23,7 @@
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import UserMenu from '@/components/UserMenu.vue';
 import { VuetifyMixin } from '@/mixins/VuetifyMixin';
+import { timerService, userService } from '@/services';
 @Component({
 	components:{
 		UserMenu,
@@ -38,6 +39,16 @@ export default class AppBar extends Mixins(VuetifyMixin){
 	}
 	get IsHome(): boolean{
 		return this.$route.path === '/';
+	}
+
+	get Title(): string{
+		if(this.$route.params.tagId){
+			const tag = userService.findTagById(this.$route.params.tagId);
+			if(tag !== undefined){
+				return `${tag.tag}`;
+			}
+		}
+		return "Multi Timer";
 	}
 }
 </script>

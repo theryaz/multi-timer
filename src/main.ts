@@ -5,7 +5,7 @@ import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from '@/store'
-import { timerService } from '@/services'
+import { timerService, userService } from '@/services'
 
 import vuetify from './plugins/vuetify';
 
@@ -31,6 +31,7 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     store.commit('setFirebaseUser', user);
     timerService.start();
+    userService.start();
   }else if(!store.state.userState.firebaseAuthInitialized){
     store.commit('firebaseAuthInitialized');
   }

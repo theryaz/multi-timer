@@ -43,7 +43,7 @@
 					</v-icon>
 				</v-btn>
 			</template>
-			<v-dialog v-model="showConfirm">
+			<v-dialog max-width="600" v-model="showConfirm">
 				<v-card class="py-6 px-4s">
 					<v-card-text>
 						{{ confirmText }}
