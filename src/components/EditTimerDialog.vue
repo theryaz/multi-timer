@@ -1,5 +1,5 @@
 <template>
-	<v-dialog fullscreen :value="value" @input="(val) => $emit('input', val)">
+	<v-dialog max-width="600" fullscreen :value="value" @input="(val) => $emit('input', val)">
 		<v-card class="px-4 py-6" v-if="timer">
 			<v-card-title class="primary">
 				<v-btn fab elevation="0" color="accent" class="mr-4">
@@ -20,7 +20,7 @@
 						<v-col offset="6" cols="6">
 							<v-switch
 								inset label="Protected"
-								v-model="formTimer.protected"
+								v-model="formTimer.isProtected"
 								color="primary"
 								persistent-hint
 								hint="Requires prompt to make changes"
@@ -51,9 +51,6 @@
 													label="Modify Start Time"
 													v-model="datetime"
 													@input="onDateChange"
-													:datePickerProps="{
-														allowedDates: allowedDates
-													}"
 												>
 													<template slot="dateIcon">
 														<v-icon>mdi-calendar</v-icon>
@@ -166,7 +163,6 @@ export default class EditTimerDialog extends Mixins(VuetifyMixin) {
 	}
 	onDateChange(newDate: Date): void{
 		console.log("newDate", newDate);
-
 	}
 
 	get Timer(): TimerModel{
@@ -192,15 +188,13 @@ export default class EditTimerDialog extends Mixins(VuetifyMixin) {
 	allowedDates(date: string): boolean{
 		const [YY,MM,DD] = date.split('-');
 		const now = new Date();
-		return new Date(+YY,+MM-1,+DD,now.getHours(), now.getMinutes(), now.getSeconds()).getDate() <= now.getDate();
-	}
-	allowedHours(v: string): boolean{
-		console.log("allowedHours", v);
-		return true;
-	}
-	allowedMinutes(v: string): boolean{
-		console.log("allowedMinutes", v);
-		return true;
+		if(now.getMonth() === +MM){
+			return new Date(+YY,+MM-1,+DD,now.getHours(), now.getMinutes(), now.getSeconds()).getDate() <= now.getDate();
+		}
+		if(now.getMonth() >= +MM){
+			return true;
+		}
+			return false;
 	}
 
 	submit(): void{

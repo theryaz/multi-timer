@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="py-6">
     <v-card
-      v-if="RootTimers.length === 0"
+      v-if="Timers.length === 0"
       class="px-6 py-12 text-h6 text-center text--disabled"
       outlined
     >
@@ -14,10 +14,11 @@
     </v-card>
     <v-row v-else>
       <v-col
-        v-for="(timer, index) of RootTimers" :key="index"
+        v-for="(timer, index) of Timers" :key="index"
         cols="12" sm="6" md="4" lg="3"
       >
         <Timer
+          :tick="tick"
           :timer="timer"
           @start="updateTimers"
           @stop="updateTimers"
@@ -31,7 +32,7 @@
       @click:timer="addTimer"
     />
 
-    <v-dialog v-model="showDelete">
+    <v-dialog max-width="600" v-model="showDelete">
       <v-card class="px-4 py-6">
         <v-card-title>
           <v-btn fab elevation="0" color="primary" class="mr-4">
@@ -61,12 +62,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator';
+import { Component, Mixins, Watch } from 'vue-property-decorator';
 import { CurrentUserMixin } from '@/mixins/CurrentUserMixin';
 import store from '@/store';
 import FabLauncher from '@/components/FabLauncher.vue';
 import { TimerModel } from '@/models/TimerModel';
-import { timerService } from '@/services';
+import { timerService, userService } from '@/services';
 
 
 @Component({
@@ -76,17 +77,46 @@ import { timerService } from '@/services';
 })
 export default class Home extends Mixins(CurrentUserMixin) {
 
-  get RootTimers(): TimerModel[]{
-    return store.state.userState.rootTimers;
+  get Tag(): string | undefined{
+    const tag = userService.findTagById(this.$route.params.tagId);
+    if(tag === undefined) return undefined;
+    return tag.tag;
+  }
+  @Watch('Tag', { immediate: true }) updateTagRef(tag?: string): void{
+    if(tag !== undefined){
+      timerService.startTagRef(tag);
+    }
+  }
+
+  get Timers(): TimerModel[]{
+    if(this.Tag === undefined){
+      return store.state.userState.rootTimers;
+    }
+    return store.state.userState.timers[this.Tag] || [];
   }
 
   async addTimer(timer: TimerModel | null = null): Promise<void>{
-    store.dispatch('addTimer', timer);
+    store.dispatch('addTimer', {
+      tag: this.Tag,
+      timer: timer,
+    });
   }
 
   updateTimers(): void{
     timerService.updateTimers();
   }
+
+  /** Cental interval timer which triggers all Timer components to update */
+  interval: number | null = null;
+  tick: number = 0;
+	created(): void{
+    this.interval = setInterval(() => this.tick++, 1000);
+	}
+	beforeDestroy(): void{
+		if(this.interval){
+			clearInterval(this.interval);
+		}
+	}
 
   showDelete: boolean = false;
   timerToDelete: TimerModel | null = null;
@@ -95,7 +125,10 @@ export default class Home extends Mixins(CurrentUserMixin) {
     this.showDelete = true;
   }
   deleteTimer(){
-    store.dispatch('deleteTimer', this.timerToDelete);
+    store.dispatch('deleteTimer', {
+      tag: this.Tag,
+      timer: this.timerToDelete,
+    });
     this.showDelete = false;
   }
   get DeleteTimerTitle(): string{
@@ -112,7 +145,10 @@ export default class Home extends Mixins(CurrentUserMixin) {
     this.showEdit = true;
   }
   editTimer(timer: TimerModel){
-    store.dispatch('editTimer', timer);
+    store.dispatch('editTimer', {
+      tag: this.Tag,
+      timer,
+    });
     this.showEdit = false;
     this.timerToEdit = null;
   }

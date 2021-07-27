@@ -43,7 +43,7 @@
 					</v-icon>
 				</v-btn>
 			</template>
-			<v-dialog v-model="showConfirm">
+			<v-dialog max-width="600" v-model="showConfirm">
 				<v-card class="py-6 px-4s">
 					<v-card-text>
 						{{ confirmText }}
@@ -78,7 +78,7 @@ export default class Timer extends Mixins(VuetifyMixin) {
 	@Prop({ required: true }) timer!: TimerModel;
 
 	get TimerProtected(): boolean{
-		return this.Timer.protected;
+		return this.Timer.isProtected;
 	}
 	get Timer(): TimerModel{
 		return this.timer;
@@ -98,6 +98,11 @@ export default class Timer extends Mixins(VuetifyMixin) {
 			this.interval = setInterval(() => this.internalTick++, 1000);
 		}
 	}
+	beforeDestroy(): void{
+		if(this.interval){
+			clearInterval(this.interval);
+		}
+	}
 
 	cancelConfirm(): void{
 		this.showConfirm = false;
@@ -108,7 +113,7 @@ export default class Timer extends Mixins(VuetifyMixin) {
 	confirmText: string = "";
 	confirmAction: string | null = null;
 	start(confirmed?: boolean): void{
-		if(this.timer.protected && confirmed !== true){
+		if(this.timer.isProtected && confirmed !== true){
 			this.showConfirm = true;
 			this.confirmText = `Start ${this.timer.label}?`;
 			this.confirmAction = "start";
@@ -120,7 +125,7 @@ export default class Timer extends Mixins(VuetifyMixin) {
 		this.cancelConfirm();
 	}
 	stop(confirmed?: boolean): void{
-		if(this.timer.protected && confirmed !== true){
+		if(this.timer.isProtected && confirmed !== true){
 			this.showConfirm = true;
 			this.confirmText = `Stop ${this.timer.label}?`;
 			this.confirmAction = "stop";
@@ -132,7 +137,7 @@ export default class Timer extends Mixins(VuetifyMixin) {
 		this.cancelConfirm();
 	}
 	reset(confirmed?: boolean): void{
-		if(this.timer.protected && confirmed !== true){
+		if(this.timer.isProtected && confirmed !== true){
 			this.showConfirm = true;
 			this.confirmText = `Reset ${this.timer.label}?`;
 			this.confirmAction = "reset";
@@ -157,7 +162,7 @@ export default class Timer extends Mixins(VuetifyMixin) {
 .time{
 	letter-spacing: 1px;
 }
-.protected-icon-position{
+.isProtected-icon-position{
 	position: absolute;
 	top: 16px;
 	left: 50%;

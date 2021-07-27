@@ -1,17 +1,7 @@
 <template>
 	<v-app>
-		<AppBar :useNavbar="useNavbar" :showSideNav="ShowSideNav" @update:show-side-nav="updateShowSideNav"/>
-		<template v-if="useNavbar">
-			<v-navigation-drawer
-				width="180"
-				app fixed dark
-				color="primary"
-				:value="ShowSideNav"
-				@input="updateShowSideNav"
-			>
-				
-			</v-navigation-drawer>
-		</template>
+		<AppBar/>
+		<NavigationDrawer />
 		<v-main>
 			<v-fade-transition hide-on-leave>
 				<router-view />
@@ -39,19 +29,6 @@ export default Vue.extend({
 		},
 		IsHome(): boolean{
 			return this.$route.path === '/';
-		},
-		ShowSideNav(): boolean{
-			return this.showSideNav && this.IsHome;
-		}
-	},
-	methods: {
-		updateShowSideNav(val: boolean): void{
-			this.showSideNav = val;
-		}
-	},
-	data(){
-		return {
-			showSideNav: false,
 		}
 	}
 });

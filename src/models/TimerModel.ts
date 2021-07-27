@@ -12,7 +12,7 @@ export class TimerModel{
 	public label: string;
 	public intervals: TimerInterval[] = [];
 	/** Timer requires prompt to be modified */
-	public protected: boolean = false;
+	public isProtected: boolean = false;
 
 	get state(): TimerState{
 		if(this.intervals.length === 0) return "stopped";
@@ -44,10 +44,11 @@ export class TimerModel{
 		return this.state === "stopped";
 	}
 	
-	constructor(label: string, intervals: TimerInterval[] = []){
+	constructor(label: string, intervals: TimerInterval[] = [], isProtected: boolean = false){
 		this.uid = randomString(24);
 		this.label = label;
 		this.intervals = intervals;
+		this.isProtected = isProtected;
 	}
 
 	start(time?: Date): TimerModel{
@@ -88,10 +89,10 @@ export class TimerModel{
 				.map((i: Record<string,string>) => ({
 					started: new Date(i.started),
 					stopped: i.stopped ? new Date(i.stopped) : undefined,
-				})): undefined
+				})): undefined,
+			timer.isProtected
 		);
 		t.uid = timer.uid;
-		t.protected = timer.protected;
 		return t;
 	}
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
