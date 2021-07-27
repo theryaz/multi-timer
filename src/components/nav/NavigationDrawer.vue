@@ -135,7 +135,7 @@ export default class NavigationDrawer extends Mixins(VuetifyMixin){
 		];
 	}
 
-	showEditLabels: boolean = true;
+	showEditLabels: boolean = false;
 	newLabel: string = "";
 	editLabels(): void{
 		this.showEditLabels = true;
