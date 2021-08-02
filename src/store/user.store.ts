@@ -96,10 +96,10 @@ const userStore: Module<UserState, RootState> = {
 				userService.saveUserPrefs(state.userPrefs);
 			}
 		},
-		applyUserPrefs(state, prefs: UserPrefs) {
-			state.userPrefs.darkMode = prefs.darkMode ?? false;
-			state.userPrefs.tags = prefs.tags ?? [];
-			state.userPrefs.shareTags = prefs.shareTags ?? [];
+		applyUserPrefs(state, prefs?: UserPrefs) {
+			state.userPrefs.darkMode = prefs?.darkMode ?? false;
+			state.userPrefs.tags = prefs?.tags ?? [];
+			state.userPrefs.shareTags = prefs?.shareTags ?? [];
 		},
 		applyRootTimers(state, timers: TimerModel[]) {
 			state.rootTimers = timers.map(t => TimerModel.deserialize(t));

@@ -1,21 +1,26 @@
 import { Component, Vue } from 'vue-property-decorator';
 import firebase from 'firebase';
 import store from '@/store';
+import userStore from '@/store/user.store';
 
 @Component
 export class FirebaseAuthMixin extends Vue {
-	async loginWithAnonymous({
-		displayName
-	}: { displayName: string }) {
+	async loginWithAnonymous() {
 		const result = await firebase.auth().signInAnonymously()
 		if (result.user){
-			await result.user.updateProfile({
-				displayName,
-			});
-			this.$store.commit('setUserProfile', {
-				displayName
-			});
-			console.log("nav to slash");
+			this.$router.push('/');
+		}
+	}
+	async upgradeAnonymous() {
+		if (!store.state.userState.firebaseUser){
+			throw new Error("Firebase user is not available");
+		}
+		const auth = await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
+		if (auth.user){
+			if (auth.credential === null){
+				throw new Error("User Auth Credential is null");
+			}
+			await store.state.userState.firebaseUser.linkWithCredential(auth.credential);
 			this.$router.push('/');
 		}
 	}

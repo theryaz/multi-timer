@@ -7,7 +7,17 @@
 				</div>
 			</template>
 			<v-list>
-				<v-list-item @click="logout">
+				<v-list-item v-if="IsAnon" @click="upgradeAnonymous">
+					<v-list-item-content>
+						Sign In
+					</v-list-item-content>
+					<v-list-item-icon>
+						<v-icon>
+							mdi-login
+						</v-icon>
+					</v-list-item-icon>
+				</v-list-item>
+				<v-list-item v-else @click="logout">
 					<v-list-item-content>
 						Logout
 					</v-list-item-content>
@@ -40,6 +50,10 @@ export default class UserMenu extends Mixins(FirebaseAuthMixin){
 	}
 	get IsAuthenticated(): boolean{
 		return store.state.userState.isAuthenticated;
+	}
+	get IsAnon(): boolean{
+		if(!store.state.userState.firebaseUser) return false;
+		return store.state.userState.firebaseUser.isAnonymous;
 	}
 	get User(): User | null{
 		return store.state.userState.user;
