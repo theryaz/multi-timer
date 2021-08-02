@@ -89,6 +89,13 @@ const userStore: Module<UserState, RootState> = {
 				userService.saveUserPrefs(state.userPrefs);
 			}
 		},
+		editTag(state, {tag}: {tag: Tag}) {
+			const index = state.userPrefs.tags.findIndex(t => t.id === tag.id);
+			if(index > -1){
+				state.userPrefs.tags.splice(index, 1, tag);
+				userService.saveUserPrefs(state.userPrefs);
+			}
+		},
 		applyUserPrefs(state, prefs: UserPrefs) {
 			state.userPrefs.darkMode = prefs.darkMode ?? false;
 			state.userPrefs.tags = prefs.tags ?? [];
@@ -157,6 +164,9 @@ const userStore: Module<UserState, RootState> = {
 		},
 		removeTag(store, payload: { id: string }) {
 			store.commit('removeTag', payload);
+		},
+		editTag(store, payload: { tag: Tag }) {
+			store.commit('editTag', payload);
 		},
 	}
 };

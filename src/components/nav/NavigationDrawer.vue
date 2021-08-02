@@ -76,24 +76,45 @@
 							</v-btn>
 						</v-list-item-icon>
 					</v-list-item>
+				</v-form>
 					<v-list-item v-for="tag of Tags" :key="tag.id">
 						<v-list-item-icon class="my-auto">
 							<v-icon>
 								mdi-label
 							</v-icon>
 						</v-list-item-icon>
-						<v-list-item-content>
-							{{ tag.label }}
-						</v-list-item-content>
-						<v-list-item-icon class="my-auto">
-							<v-btn @click="removeTag(tag.id)" icon>
-								<v-icon>
-									mdi-trash-can-outline
-								</v-icon>
-							</v-btn>
-						</v-list-item-icon>
+						<template v-if="editingTag === tag.id">
+							<v-list-item-content>
+								<v-form @submit.prevent="acceptLabelEdit(tag.id)">
+									<v-text-field v-model="editingTagLabel"/>
+								</v-form>
+							</v-list-item-content>
+							<v-list-item-icon class="my-auto">
+								<v-btn @click="endLabelEdit()" icon>
+									<v-icon>
+										mdi-close
+									</v-icon>
+								</v-btn>
+								<v-btn @click="acceptLabelEdit(tag.id)" icon>
+									<v-icon>
+										mdi-check
+									</v-icon>
+								</v-btn>
+							</v-list-item-icon>
+						</template>
+						<template v-else>
+							<v-list-item-content @click="startLabelEdit(tag)">
+								{{ tag.label }}
+							</v-list-item-content>
+							<v-list-item-icon class="my-auto">
+								<v-btn @click="removeTag(tag.id)" icon>
+									<v-icon>
+										mdi-trash-can-outline
+									</v-icon>
+								</v-btn>
+							</v-list-item-icon>
+						</template>
 					</v-list-item>
-				</v-form>
 			</v-card>
 		</v-dialog>
 
@@ -101,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator';
+import { Component, Mixins, Watch } from 'vue-property-decorator';
 import { VuetifyMixin } from '@/mixins/VuetifyMixin';
 import { Route } from 'vue-router';
 import { Tag } from '@/store/user.store';
@@ -136,6 +157,9 @@ export default class NavigationDrawer extends Mixins(VuetifyMixin){
 	}
 
 	showEditLabels: boolean = false;
+	@Watch('showEditLabels') onShowEditLabelsChange(val: boolean){
+		if(val === false) this.endLabelEdit();
+	}
 	newLabel: string = "";
 	editLabels(): void{
 		this.showEditLabels = true;
@@ -150,6 +174,30 @@ export default class NavigationDrawer extends Mixins(VuetifyMixin){
 	}
 	removeTag(id: string): void{
 		store.dispatch('removeTag', { id });
+	}
+	editTag(tag: Tag): void{
+		store.dispatch('editTag', { tag });
+	}
+
+	editingTag: string | null = null;
+	editingTagLabel: string = "";
+
+	startLabelEdit(tag: Tag): void{
+		this.editingTag = tag.id;
+		this.editingTagLabel = tag.label;
+	}
+	endLabelEdit(): void{
+		this.editingTag = null;
+		this.editingTagLabel = "";
+	}
+	acceptLabelEdit(tagId: string): void{
+		const tag = this.Tags.find(t => t.id === tagId);
+		if(tag === undefined) return;
+		this.editTag({
+			id: tag.id,
+			label: this.editingTagLabel,
+		});
+		this.endLabelEdit();
 	}
 
 }
