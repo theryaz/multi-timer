@@ -5,11 +5,7 @@
 		elevation="0"
 		height="57"
 	>
-		<v-sheet outlined class="rounded-lg pa-2 px-3">
-			<v-icon>
-				mdi-timer-outline
-			</v-icon>
-		</v-sheet>
+		<Logo />
 		<div class="ml-2 text-h6">
 			{{ Title }}
 		</div>
@@ -22,11 +18,13 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
 import UserMenu from '@/components/UserMenu.vue';
+import Logo from '@/components/nav/Logo.vue';
 import { VuetifyMixin } from '@/mixins/VuetifyMixin';
-import { timerService, userService } from '@/services';
+import { userService } from '@/services';
 @Component({
 	components:{
 		UserMenu,
+		Logo,
 	}
 })
 export default class AppBar extends Mixins(VuetifyMixin){

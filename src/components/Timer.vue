@@ -12,7 +12,7 @@
 				</v-icon>
 			</v-btn>
 		</div>
-		<div v-if="TimerProtected" class="position-relative">
+		<div class="position-relative timer-lock" :class="{'timer-lock-visible': TimerProtected}">
 			<div class="protected-icon-position text-center">
 				<v-icon size="24" class="protected-icon ml-n3 text--disabled">
 					mdi-lock
@@ -167,5 +167,11 @@ export default class Timer extends Mixins(VuetifyMixin) {
 	top: 16px;
 	left: 50%;
 	width: 0;
+}
+.timer-lock{
+	opacity: 0;
+	&.timer-lock-visible{
+		opacity: 1;
+	}
 }
 </style>
