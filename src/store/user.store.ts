@@ -18,16 +18,16 @@ export interface UserState{
 	timers: Record<string, TimerModel[]>;
 }
 
-export type TagRef = {
-	tag: string;
+export type Tag = {
+	label: string;
 	id: string;
 }
 
 export interface UserPrefs{
 	darkMode?: boolean;
-	tags: TagRef[];
+	tags: Tag[];
 	/** Tags shared with user */
-	shareTags: TagRef[];
+	shareTags: Tag[];
 }
 
 const userStore: Module<UserState, RootState> = {
@@ -75,9 +75,9 @@ const userStore: Module<UserState, RootState> = {
 			state.userPrefs = prefs;
 			userService.saveUserPrefs(prefs);
 		},
-		addTag(state, {tag}: {tag: string}) {
+		addTag(state, {label}: {label: string}) {
 			state.userPrefs.tags.push({
-				tag,
+				label,
 				id: randomString(36),
 			});
 			userService.saveUserPrefs(state.userPrefs);
@@ -97,40 +97,40 @@ const userStore: Module<UserState, RootState> = {
 		applyRootTimers(state, timers: TimerModel[]) {
 			state.rootTimers = timers.map(t => TimerModel.deserialize(t));
 		},
-		applyTagTimers(state, { tag, timers }: { tag: string; timers: TimerModel[] }) {
-			Vue.set(state.timers, tag, timers.map(t => TimerModel.deserialize(t)));
+		applyTagTimers(state, { id, timers }: { id: string; timers: TimerModel[] }) {
+			Vue.set(state.timers, id, timers.map(t => TimerModel.deserialize(t)));
 		},
-		deleteTimer(state, { tag, timer }: {tag: string; timer: TimerModel}) {
-			if (tag === undefined) {
+		deleteTimer(state, { id, timer }: {id: string; timer: TimerModel}) {
+			if (id === undefined) {
 				const index = state.rootTimers.findIndex(t => t.uid === timer.uid);
 				state.rootTimers.splice(index, 1);
 			}else{
-				if (!Array.isArray(state.timers[tag])) Vue.set(state.timers, tag, []);
-				const index = state.timers[tag].findIndex(t => t.uid === timer.uid);
-				state.timers[tag].splice(index, 1);
+				if (!Array.isArray(state.timers[id])) Vue.set(state.timers, id, []);
+				const index = state.timers[id].findIndex(t => t.uid === timer.uid);
+				state.timers[id].splice(index, 1);
 			}
 			timerService.updateTimers();
 		},
-		editTimer(state, { tag, timer }: {tag: string; timer: TimerModel}) {
-			if(tag === undefined){
+		editTimer(state, { id, timer }: {id: string; timer: TimerModel}) {
+			if(id === undefined){
 				const index = state.rootTimers.findIndex(t => t.uid === timer.uid);
 				state.rootTimers.splice(index, 1, timer);
 			}else{
-				if (!Array.isArray(state.timers[tag])) Vue.set(state.timers, tag, []);
-				const index = state.timers[tag].findIndex(t => t.uid === timer.uid);
-				state.timers[tag].splice(index, 1, timer);
+				if (!Array.isArray(state.timers[id])) Vue.set(state.timers, id, []);
+				const index = state.timers[id].findIndex(t => t.uid === timer.uid);
+				state.timers[id].splice(index, 1, timer);
 			}
 			timerService.updateTimers();
 		},
-		addTimer(state, {tag,timer = null}: {tag?: string; timer: TimerModel | null}) {
-			if (tag === undefined){
+		addTimer(state, {id,timer = null}: {id?: string; timer: TimerModel | null}) {
+			if (id === undefined){
 				state.rootTimers.push(
 					timer !== null ? timer : new TimerModel(`Timer #${state.rootTimers.length+1}`),
 				);
 			}else{
-				if (!Array.isArray(state.timers[tag])) Vue.set(state.timers, tag, []);
-				state.timers[tag].push(
-					timer !== null ? timer : new TimerModel(`Timer #${state.timers[tag].length+1}`),
+				if (!Array.isArray(state.timers[id])) Vue.set(state.timers, id, []);
+				state.timers[id].push(
+					timer !== null ? timer : new TimerModel(`Timer #${state.timers[id].length+1}`),
 				);
 			}
 			timerService.updateTimers();
@@ -140,19 +140,19 @@ const userStore: Module<UserState, RootState> = {
 		applyRootTimers(store, timers: TimerModel[]) {
 			store.commit('applyRootTimers', timers);
 		},
-		deleteTimer(store, payload: {tag: string;timer: TimerModel}) {
+		deleteTimer(store, payload: {id: string;timer: TimerModel}) {
 			store.commit('deleteTimer', payload);
 		},
-		editTimer(store, payload: {tag: string;timer: TimerModel}) {
+		editTimer(store, payload: {id: string;timer: TimerModel}) {
 			store.commit('editTimer', payload);
 		},
-		addTimer(store, payload: {tag: string;timer: TimerModel} | null = null) {
+		addTimer(store, payload: {id: string;timer: TimerModel} | null = null) {
 			store.commit('addTimer', payload);
 		},
 		saveUserPrefs(store, prefs: UserPrefs) {
 			store.commit('saveUserPrefs', prefs);
 		},
-		addTag(store, payload: { tag: string }) {
+		addTag(store, payload: { id: string }) {
 			store.commit('addTag', payload);
 		},
 		removeTag(store, payload: { id: string }) {

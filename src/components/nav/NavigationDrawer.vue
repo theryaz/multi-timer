@@ -41,7 +41,7 @@
 				</v-icon>
 			</v-list-item-icon>
 			<v-list-item-content>
-				{{ tag.tag }}
+				{{ tag.label }}
 			</v-list-item-content>
 		</v-list-item>
 
@@ -83,7 +83,7 @@
 							</v-icon>
 						</v-list-item-icon>
 						<v-list-item-content>
-							{{ tag.tag }}
+							{{ tag.label }}
 						</v-list-item-content>
 						<v-list-item-icon class="my-auto">
 							<v-btn @click="removeTag(tag.id)" icon>
@@ -145,8 +145,8 @@ export default class NavigationDrawer extends Mixins(VuetifyMixin){
 		this.createTag(this.newLabel);
 		this.newLabel = "";
 	}
-	createTag(tag: string): void{
-		store.dispatch('addTag', { tag });
+	createTag(label: string): void{
+		store.dispatch('addTag', { label });
 	}
 	removeTag(id: string): void{
 		store.dispatch('removeTag', { id });

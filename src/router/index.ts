@@ -29,6 +29,7 @@ const routes: Array<RouteConfig> = [
         path: ':tagId?',
         name: 'Home',
         component: Home,
+        props: true,
       }
     ]
   }

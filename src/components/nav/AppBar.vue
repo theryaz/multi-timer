@@ -43,7 +43,7 @@ export default class AppBar extends Mixins(VuetifyMixin){
 		if(this.$route.params.tagId){
 			const tag = userService.findTagById(this.$route.params.tagId);
 			if(tag !== undefined){
-				return `${tag.tag}`;
+				return `${tag.label}`;
 			}
 		}
 		return "Multi Timer";

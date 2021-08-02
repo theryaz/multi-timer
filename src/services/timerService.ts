@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import store from '@/store';
-import { UserPrefs } from '@/store/user.store';
+import { Tag, UserPrefs } from '@/store/user.store';
 import { TimerModel } from '@/models/TimerModel';
 
 const knrShare = [
@@ -20,30 +20,41 @@ export default class TimerService{
 		}
 		return `timers/root/${store.state.userState.user?.uid}`;
 	}
-	getTagRef(tag: string): string{
-		return `timers/${tag}`;
+	getTagRef(tag: Tag): string{
+		const tagRef = store.state.userState.userPrefs.tags.find(t => t.id === tag.id);
+		const sharedTagRef = store.state.userState.userPrefs.tags.find(t => t.id === tag.id);
+		if(tagRef !== undefined){
+			return `timers/${tagRef.id}`;
+		} else if (sharedTagRef !== undefined){
+			return `timers/${sharedTagRef.id}`;
+		}
+		return `timers/${tag.id}`;
 	}
 	async start(){
 		this.rootTimersRef = firebase.database().ref(this.UserRootTimers);
 		this.rootTimersRef.on('value', this.rootTimersChanged.bind(this));
 	}
-	async startTagRef(tag: string){
-		if (this.timerTagRefs[tag] !== undefined) return;
-		this.timerTagRefs[tag] = firebase.database().ref(this.getTagRef(tag));
-		this.timerTagRefs[tag].on('value', (snapshot) => this.tagTimersChanged(tag, snapshot));
+	/**
+	 * @param tag Tag ID or TagRef
+	 */
+	async startTagRef(tag: Tag){
+		const tagRef = this.getTagRef(tag);
+		if(tagRef === null) return;
+		this.timerTagRefs[tag.id] = firebase.database().ref(tagRef);
+		this.timerTagRefs[tag.id].on('value', (snapshot) => this.tagTimersChanged(tag.id, snapshot));
 	}
-	async stopTagRef(tag: string){
-		if (this.timerTagRefs['tag'] === undefined) return;
-		this.timerTagRefs[tag].off();
+	async stopTagRef(tag: Tag){
+		if (this.timerTagRefs[tag.id] === undefined) return;
+		this.timerTagRefs[tag.id].off();
 	}
 
 	get OpenTagRefs(): [string, firebase.database.Reference][]{
 		return Object.entries(this.timerTagRefs);
 	}
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	serializeTagTimers(tag: string): Record<string,any>[]{
-		if(this.timerTagRefs[tag] === undefined) return [];
-		return store.state.userState.timers[tag].map(t => t.serialize());
+	serializeTagTimers(tagId: string): Record<string,any>[]{
+		if(this.timerTagRefs[tagId] === undefined) return [];
+		return store.state.userState.timers[tagId].map(t => t.serialize());
 	}
 	async updateTimers(){
 		const ops: Promise<unknown>[] = [];
@@ -65,10 +76,10 @@ export default class TimerService{
 		store.commit('applyRootTimers', timers.map((t: any) => TimerModel.deserialize(t)));
 	}
 
-	private async tagTimersChanged(tag: string, snapshot: firebase.database.DataSnapshot){
+	private async tagTimersChanged(tagId: string, snapshot: firebase.database.DataSnapshot){
 		// console.log("tagTimersChanged", JSON.stringify(snapshot.val(), null, 2));
 		const timers = snapshot.val() || [];
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		store.commit('applyTagTimers', {tag, timers: timers.map((t: any) => TimerModel.deserialize(t))});
+		store.commit('applyTagTimers', { id: tagId, timers: timers.map((t: any) => TimerModel.deserialize(t))});
 	}
 }

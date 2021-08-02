@@ -62,12 +62,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator';
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import { CurrentUserMixin } from '@/mixins/CurrentUserMixin';
 import store from '@/store';
 import FabLauncher from '@/components/FabLauncher.vue';
 import { TimerModel } from '@/models/TimerModel';
 import { timerService, userService } from '@/services';
+import { Tag } from '@/store/user.store';
 
 
 @Component({
@@ -77,27 +78,33 @@ import { timerService, userService } from '@/services';
 })
 export default class Home extends Mixins(CurrentUserMixin) {
 
-  get Tag(): string | undefined{
-    const tag = userService.findTagById(this.$route.params.tagId);
-    if(tag === undefined) return undefined;
-    return tag.tag;
+  @Prop({ default: undefined }) tagId?: string;
+  get Tag(): Tag | null{
+    if(this.tagId === undefined) return null;
+    const tag = userService.findTagById(this.tagId);
+    if(tag === undefined) return null;
+    return tag;
   }
-  @Watch('Tag', { immediate: true }) updateTagRef(tag?: string): void{
-    if(tag !== undefined){
+  @Watch('Tag', { immediate: true }) updateTagRef(tag: Tag | null): void{
+    if(tag !== null){
       timerService.startTagRef(tag);
     }
   }
+  get TagId(): string | undefined{
+    if(this.Tag === null) return undefined;
+    return this.Tag.id;
+  }
 
   get Timers(): TimerModel[]{
-    if(this.Tag === undefined){
+    if(this.Tag === null){
       return store.state.userState.rootTimers;
     }
-    return store.state.userState.timers[this.Tag] || [];
+    return store.state.userState.timers[this.Tag.id] || [];
   }
 
   async addTimer(timer: TimerModel | null = null): Promise<void>{
     store.dispatch('addTimer', {
-      tag: this.Tag,
+      id: this.TagId,
       timer: timer,
     });
   }
@@ -126,7 +133,7 @@ export default class Home extends Mixins(CurrentUserMixin) {
   }
   deleteTimer(){
     store.dispatch('deleteTimer', {
-      tag: this.Tag,
+      id: this.TagId,
       timer: this.timerToDelete,
     });
     this.showDelete = false;
@@ -146,7 +153,7 @@ export default class Home extends Mixins(CurrentUserMixin) {
   }
   editTimer(timer: TimerModel){
     store.dispatch('editTimer', {
-      tag: this.Tag,
+      id: this.TagId,
       timer,
     });
     this.showEdit = false;
