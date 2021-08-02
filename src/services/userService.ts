@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import store from '@/store';
-import { TagRef, UserPrefs } from '@/store/user.store';
+import { Tag, UserPrefs } from '@/store/user.store';
 
 
 export default class UserService{
@@ -12,7 +12,7 @@ export default class UserService{
 		this.userPreferencesRef = firebase.database().ref(this.UsersPrefsRef);
 		this.userPreferencesRef.on('value', this.userPrefsChanged.bind(this));
 	}
-	findTagById(id: string): TagRef | undefined{
+	findTagById(id: string): Tag | undefined{
 		return store.state.userState.userPrefs.tags.find(t => t.id === id) ??
 					store.state.userState.userPrefs.shareTags.find(t => t.id === id);
 	}

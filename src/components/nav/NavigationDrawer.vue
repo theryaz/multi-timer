@@ -104,7 +104,7 @@
 import { Component, Mixins } from 'vue-property-decorator';
 import { VuetifyMixin } from '@/mixins/VuetifyMixin';
 import { Route } from 'vue-router';
-import { TagRef } from '@/store/user.store';
+import { Tag } from '@/store/user.store';
 import store from '@/store';
 @Component
 export default class NavigationDrawer extends Mixins(VuetifyMixin){
@@ -128,7 +128,7 @@ export default class NavigationDrawer extends Mixins(VuetifyMixin){
 		};
 	}
 
-	get Tags(): TagRef[]{
+	get Tags(): Tag[]{
 		return [
 			...store.state.userState.userPrefs.tags,
 			...store.state.userState.userPrefs.shareTags,

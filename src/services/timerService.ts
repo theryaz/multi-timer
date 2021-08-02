@@ -34,9 +34,6 @@ export default class TimerService{
 		this.rootTimersRef = firebase.database().ref(this.UserRootTimers);
 		this.rootTimersRef.on('value', this.rootTimersChanged.bind(this));
 	}
-	/**
-	 * @param tag Tag ID or TagRef
-	 */
 	async startTagRef(tag: Tag){
 		const tagRef = this.getTagRef(tag);
 		if(tagRef === null) return;
