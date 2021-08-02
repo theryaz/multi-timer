@@ -154,3 +154,10 @@ export default class NavigationDrawer extends Mixins(VuetifyMixin){
 
 }
 </script>
+<style lang="scss" scoped>
+.v-list-item--active{
+	&.theme--dark{
+		color: $mt-secondary !important;
+	}
+}
+</style>
