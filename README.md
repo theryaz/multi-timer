@@ -1,4 +1,4 @@
-# Multi Timer
+# multiti.me
 
 ## Project setup
 ```

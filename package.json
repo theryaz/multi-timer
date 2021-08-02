@@ -1,6 +1,6 @@
 {
-  "name": "multi_timer",
-  "version": "0.1.0",
+  "name": "multitime",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

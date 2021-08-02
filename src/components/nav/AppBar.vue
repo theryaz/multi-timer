@@ -6,9 +6,7 @@
 		height="57"
 	>
 		<Logo />
-		<div class="ml-2 text-h6">
-			{{ Title }}
-		</div>
+		<div class="ml-2 text-h6 title-text" v-html="Title" />
 		<v-spacer />
 		<SettingsMenu class="mx-2" />
 		<UserMenu class="nav-edge" />
@@ -46,7 +44,7 @@ export default class AppBar extends Mixins(VuetifyMixin){
 				return `${tag.label}`;
 			}
 		}
-		return "Multi Timer";
+		return "multi <strong>ti.me</strong>";
 	}
 }
 </script>
@@ -74,5 +72,8 @@ export default class AppBar extends Mixins(VuetifyMixin){
 	&.dark{
 		border-bottom: thin solid rgba(255, 255, 255, 0.12) !important;
 	}
+}
+.title-text{
+	letter-spacing: 1.4px !important;
 }
 </style>
